@@ -17,7 +17,7 @@
 1. Install _aicommits_:
 
     ```sh
-    npm install -g aicommits
+    npm install -g https://github.com/naitsric/aicommits#npm/dist
     ```
 
 2. Retrieve your API key from [OpenAI](https://platform.openai.com/account/api-keys)
