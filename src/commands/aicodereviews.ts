@@ -14,9 +14,9 @@ import { KnownError, handleCliError } from '../utils/error.js';
 
 export default async (
 	generate: number | undefined,
-	excludeFiles: string[],
 	frombranch: string,
 	tobranch: string,
+	excludeFiles: string[],
 ) => (async () => {
 	intro(bgCyan(black(' makecodereview ')));
 	await assertGitRepo();

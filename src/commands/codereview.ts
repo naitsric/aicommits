@@ -7,6 +7,7 @@ const rawArgv = process.argv.slice(2);
 
 export default command({
 	name: 'makecodereview',
+	parameters: ['<frombranch>', '<tobranch>'],
 	flags: {
 		generate: {
 			type: Number,
@@ -30,16 +31,14 @@ export default command({
 			alias: 't',
 		},
 	},
-
-	parameters: ['<frombranch>', '<tobranch>'],
 }, (argv) => {
 	(async () => {
 		const { frombranch, tobranch } = argv._;
 		aicodereviews(
 			argv.flags.generate,
-			argv.flags.exclude,
 			frombranch,
 			tobranch,
+			argv.flags.exclude,
 			rawArgv,
 		);
 	})().catch((error) => {
