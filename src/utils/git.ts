@@ -80,6 +80,7 @@ export const getBranchDiff = async (
 	if (!files) {
 		return;
 	}
+	console.log(excludeFiles?.map(excludeFromDiff));
 	const { stdout: diff } = await execa(
 		'git',
 		[
