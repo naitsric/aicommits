@@ -34,6 +34,7 @@ export default command({
 }, (argv) => {
 	(async () => {
 		const { frombranch, tobranch } = argv._;
+		console.log("argv", argv);
 		aicodereviews(
 			argv.flags.generate,
 			frombranch,
