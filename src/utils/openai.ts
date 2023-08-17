@@ -186,9 +186,9 @@ export const generateCodeReviewMessage = async (
 	timeout: number,
 	proxy?: string,
 ) => {
-	let messages = [];
+	const messages = [];
 
-	for(const dif of diff) {
+	for (const dif of diff) {
 		try {
 			const completion = await createChatCompletion(
 				apiKey,
@@ -230,5 +230,5 @@ export const generateCodeReviewMessage = async (
 			throw errorAsAny;
 		}
 	}
-	return [messages.join("/n ")];
+	return [messages.join('\n\n')];
 };
