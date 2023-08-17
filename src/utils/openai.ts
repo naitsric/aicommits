@@ -222,7 +222,7 @@ export const generateCodeReviewMessage = async (
 						.filter(choice => choice.message?.content)
 						.map(choice => choice.message!.content),
 				),
-				'==========================================================================',
+				'\n==========================================================================\n',
 			]);
 		} catch (error) {
 			const errorAsAny = error as any;
