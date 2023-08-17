@@ -216,11 +216,14 @@ export const generateCodeReviewMessage = async (
 				proxy,
 			);
 
-			messages.push(deduplicateMessages(
-				completion.choices
-					.filter(choice => choice.message?.content)
-					.map(choice => choice.message!.content),
-			));
+			messages.push([
+				deduplicateMessages(
+					completion.choices
+						.filter(choice => choice.message?.content)
+						.map(choice => choice.message!.content),
+				),
+				'==========================================================================',
+			]);
 		} catch (error) {
 			const errorAsAny = error as any;
 			if (errorAsAny.code === 'ENOTFOUND') {
