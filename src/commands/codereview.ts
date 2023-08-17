@@ -34,13 +34,11 @@ export default command({
 }, (argv) => {
 	(async () => {
 		const { frombranch, tobranch } = argv._;
-		console.log("argv", argv);
 		aicodereviews(
 			argv.flags.generate,
 			frombranch,
 			tobranch,
-			argv.flags.exclude,
-			rawArgv,
+			argv.flags.exclude
 		);
 	})().catch((error) => {
 		console.error(`${red('✖')} ${error.message}`);

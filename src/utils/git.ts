@@ -1,5 +1,6 @@
 import { execa } from 'execa';
 import { KnownError } from './error.js';
+import * as console from "console";
 
 export const assertGitRepo = async () => {
 	const { stdout, failed } = await execa('git', ['rev-parse', '--show-toplevel'], { reject: false });
@@ -60,9 +61,14 @@ export const getStagedDiff = async (excludeFiles?: string[]) => {
 	};
 };
 
+type ResultBranchDiff = {
+	files: string[];
+	prop2: string[];
+};
+
 export const getBranchDiff = async (
 	frombranch: string, tobranch: string, excludeFiles?: string[],
-) => {
+) =>  {
 	const diffCached = ['diff', frombranch, tobranch, '--diff-algorithm=minimal'];
 	const { stdout: files } = await execa(
 		'git',
@@ -81,8 +87,26 @@ export const getBranchDiff = async (
 	if (!files) {
 		return;
 	}
-	console.log("-------------------");
-	console.log(excludeFiles?.map(excludeFromDiff));
+	const _files =  files.split('\n');
+	let _diff: string[] = [];
+
+
+	for(const file of _files) {
+		let { diff } = await getBranchDiffPerFile(frombranch, tobranch, file, excludeFiles);
+		_diff.push(diff);
+	}
+
+	return {
+		files: _files,
+		diff: _diff,
+	};
+};
+
+export const getBranchDiffPerFile = async (
+	frombranch: string, tobranch: string, file: string, excludeFiles?: string[],
+) => {
+	const diffCached = ['diff', `${frombranch}..${tobranch}`, '--diff-algorithm=minimal', '--', file];
+
 	const { stdout: diff } = await execa(
 		'git',
 		[
@@ -96,7 +120,6 @@ export const getBranchDiff = async (
 		],
 	);
 	return {
-		files: files.split('\n'),
 		diff,
 	};
 };

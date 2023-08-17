@@ -179,51 +179,56 @@ export const generateCodeReviewMessage = async (
 	apiKey: string,
 	model: TiktokenModel,
 	locale: string,
-	diff: string,
+	diff: string[],
 	completions: number,
 	maxLength: number,
 	type: CommitType,
 	timeout: number,
 	proxy?: string,
 ) => {
-	try {
-		const completion = await createChatCompletion(
-			apiKey,
-			{
-				model,
-				messages: [
-					{
-						role: 'system',
-						content: generateCodeReviewPrompt(locale, maxLength, type),
-					},
-					{
-						role: 'user',
-						content: diff,
-					},
-				],
-				temperature: 0.7,
-				top_p: 1,
-				frequency_penalty: 0,
-				presence_penalty: 0,
-				max_tokens: 200,
-				stream: false,
-				n: completions,
-			},
-			timeout,
-			proxy,
-		);
+	let messages = [];
 
-		return deduplicateMessages(
-			completion.choices
-				.filter(choice => choice.message?.content)
-				.map(choice => sanitizeMessage(choice.message!.content)),
-		);
-	} catch (error) {
-		const errorAsAny = error as any;
-		if (errorAsAny.code === 'ENOTFOUND') {
-			throw new KnownError(`Error connecting to ${errorAsAny.hostname} (${errorAsAny.syscall}). Are you connected to the internet?`);
+	for(const dif of diff) {
+		try {
+			const completion = await createChatCompletion(
+				apiKey,
+				{
+					model,
+					messages: [
+						{
+							role: 'system',
+							content: generateCodeReviewPrompt(locale),
+						},
+						{
+							role: 'user',
+							content: dif,
+						},
+					],
+					temperature: 0.7,
+					top_p: 1,
+					frequency_penalty: 0,
+					presence_penalty: 0,
+					max_tokens: 200,
+					stream: false,
+					n: completions,
+				},
+				timeout,
+				proxy,
+			);
+
+			messages.push(deduplicateMessages(
+				completion.choices
+					.filter(choice => choice.message?.content)
+					.map(choice => sanitizeMessage(choice.message!.content)),
+			));
+		} catch (error) {
+			const errorAsAny = error as any;
+			if (errorAsAny.code === 'ENOTFOUND') {
+				throw new KnownError(`Error connecting to ${errorAsAny.hostname} (${errorAsAny.syscall}). Are you connected to the internet?`);
+			}
+
+			throw errorAsAny;
 		}
-
-		throw errorAsAny;
 	}
+	return [messages.join("/n ")];
 };
