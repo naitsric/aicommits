@@ -68,6 +68,7 @@ export const getBranchDiff = async (
 		'git',
 		[
 			...diffCached,
+			'--name-only',
 			...filesToExclude,
 			...(
 				excludeFiles
