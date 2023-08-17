@@ -63,7 +63,7 @@ export const getStagedDiff = async (excludeFiles?: string[]) => {
 export const getBranchDiff = async (
 	frombranch: string, tobranch: string, excludeFiles?: string[],
 ) => {
-	const diffCached = ['diff', frombranch, tobranch, '--cached', '--diff-algorithm=minimal'];
+	const diffCached = ['diff', frombranch, tobranch, '--diff-algorithm=minimal'];
 	const { stdout: files } = await execa(
 		'git',
 		[
