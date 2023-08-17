@@ -219,7 +219,7 @@ export const generateCodeReviewMessage = async (
 			messages.push(deduplicateMessages(
 				completion.choices
 					.filter(choice => choice.message?.content)
-					.map(choice => sanitizeMessage(choice.message!.content)),
+					.map(choice => choice.message!.content),
 			));
 		} catch (error) {
 			const errorAsAny = error as any;
